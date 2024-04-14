@@ -1,5 +1,5 @@
 import colors from "colors";
-import inquirer, { Answers,QuestionCollection } from "inquirer";
+import inquirer, { Answers } from "inquirer";
 import { Tarea } from "../models/tareas.js";
 
 
@@ -80,15 +80,20 @@ export const leerInput=async(message:string)=>{
     const {desc}= await inquirer.prompt(question);
      return desc;   
 }
+const arregloObjetValueName=async(tareas:Tarea[])=>{
+    const elecciones: Array<Answers> = tareas.map((tarea, index) => {
+        const idx = colors.green(`${index + 1}`);
+        return {
+            value: tarea.id,
+            name: `${idx} ${tarea.descripcion}`,
+            checked:(!!tarea.completadoEn)?true:false
+        }
+    });
+    return elecciones;
+}
 
 export const listadoTareasBorrar=async(tareas:Tarea[])=>{
- const choices = tareas.map((tarea,i)=>{
-    const idx=colors.green(`${i+1}.`);
-    return{
-        value:tarea.id,
-        name:`${idx} ${tarea.descripcion}`
-    }
- })
+ const choices = await arregloObjetValueName(tareas);
  choices.unshift({
     value:'0',
     name:colors.green('0.')+' Cancelar'
@@ -117,25 +122,19 @@ export const confirmar =async(message:string)=>{
     return ok;
 }
 
-export const mostrarListadosCheckList=async(tareas:Tarea[])=>{
-    const profavorAnda = tareas.map((tarea,i)=>{
-       const idx=colors.green(`${i+1}.`);
-       return{
-           value:tarea.id,
-           name:`${idx} ${tarea.descripcion}`,
-           checked:(!!tarea.completadoEn) ? true: false
-       }
-    });
-    const pregunta=[
-       { 
-        type: 'checkbox',
-        name: 'ids',
-        message: 'Selecciones',
-        choices:profavorAnda,
-       }
-   ];
-   const {ids}= await inquirer.prompt(pregunta);
-   return ids;
-   }
+export const mostrarListadosCheckList = async(tareas:Tarea[]) => {
+    const choices= await arregloObjetValueName(tareas);
 
- 
+
+    const pregunta= [
+        {
+            type: "checkbox",
+            name: "ids",
+            message: "Seleccione",
+            choices
+        }
+    ];
+    const { ids } = await inquirer.prompt(pregunta);
+
+    return ids;
+}

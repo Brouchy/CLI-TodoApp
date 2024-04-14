@@ -32,7 +32,7 @@ export class Tareas{
   private decorarListado(lista:Tarea[]){
     for (const [index,tarea] of lista.entries()) {
       const {descripcion,completadoEn}=tarea;
-      const estado=(!!completadoEn)?colors.green("Completada"):colors.red("Pendiente");
+      const estado=(!!completadoEn)?colors.green(`${completadoEn}`):colors.red("Pendiente");
       console.log(`${colors.green(index+1+'.')} ${descripcion} :: ${estado}`)
     }
   }
@@ -55,4 +55,20 @@ export class Tareas{
     const listaFiltrada=this.getListadoTareas.filter(tareas=>tareas.id!==id);
     this._listado=[...listaFiltrada];
   }
+
+  public toggleCompletadas(ids:string[]){
+    for (const id of ids) {
+        const tarea =this._listado.find(todo=>todo.id==id);
+        if(tarea &&!tarea?.completadoEn){
+          tarea.completadoEn = new Date().toISOString();
+        }
+    }
+    for (const tarea of this.getListadoTareas) {
+       if(!ids.includes(tarea.id)){
+            tarea.completadoEn=null;
+        }
+    };
+  }
+  
 }
+
