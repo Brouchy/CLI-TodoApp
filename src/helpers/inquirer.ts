@@ -1,9 +1,9 @@
 import colors from "colors";
-import inquirer, { Answers } from "inquirer";
+import inquirer, { Answers,QuestionCollection } from "inquirer";
 import { Tarea } from "../models/tareas.js";
 
 
-const preguntas=[
+const preguntas:QuestionCollection<Answers>=[
     {
         type:'list',
         name:'opcion',
@@ -41,7 +41,7 @@ const preguntas=[
     }
 ]
 
-export const menuInquirer=async()=>{
+export const menuInquirer=async():Promise<string>=>{
     console.clear();
     console.log(colors.green("==========================="));
     console.log(colors.white("   Seleccione una opción   "));
@@ -51,7 +51,7 @@ export const menuInquirer=async()=>{
     return opcion;
 }
 
-export const pausa =async()=>{
+export const pausa =async():Promise<void>=>{
     const question=[
         {
             type:'input',
@@ -63,7 +63,7 @@ export const pausa =async()=>{
     await inquirer.prompt(question);
 }
 
-export const leerInput=async(message:string)=>{
+export const leerInput=async(message:string):Promise<string>=>{
     const question=[
         {
             type:'input',
@@ -80,19 +80,19 @@ export const leerInput=async(message:string)=>{
     const {desc}= await inquirer.prompt(question);
      return desc;   
 }
-const arregloObjetValueName=async(tareas:Tarea[])=>{
+const arregloObjetValueName=async(tareas:Tarea[]):Promise<Answers>=>{
     const elecciones: Array<Answers> = tareas.map((tarea, index) => {
         const idx = colors.green(`${index + 1}`);
         return {
             value: tarea.id,
             name: `${idx} ${tarea.descripcion}`,
-            checked:(!!tarea.completadoEn)?true:false
+            checked:tarea.completadoEn?true:false
         }
     });
     return elecciones;
 }
 
-export const listadoTareasBorrar=async(tareas:Tarea[])=>{
+export const listadoTareasBorrar=async(tareas:Tarea[]):Promise<string>=>{
  const choices = await arregloObjetValueName(tareas);
  choices.unshift({
     value:'0',
@@ -110,7 +110,7 @@ const {id}= await inquirer.prompt(question);
 return id;
 
 }
-export const confirmar =async(message:string)=>{
+export const confirmar =async(message:string):Promise<boolean>=>{
     const question=[
         {
             type:'confirm',
@@ -122,7 +122,7 @@ export const confirmar =async(message:string)=>{
     return ok;
 }
 
-export const mostrarListadosCheckList = async(tareas:Tarea[]) => {
+export const mostrarListadosCheckList = async(tareas:Tarea[]):Promise<string[]> => {
     const choices= await arregloObjetValueName(tareas);
 
 

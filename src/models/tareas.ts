@@ -25,38 +25,38 @@ export class Tareas{
     }
     this._listado.push(nuevaTarea);
    }
-  public cargarTareasFromArray(tareas:Tarea[])
+  public cargarTareasFromArray(tareas:Tarea[]):void
   {
     this._listado=[...tareas];
   }
-  private decorarListado(lista:Tarea[]){
+  private decorarListado(lista:Tarea[]):void{
     for (const [index,tarea] of lista.entries()) {
       const {descripcion,completadoEn}=tarea;
-      const estado=(!!completadoEn)?colors.green(`${completadoEn}`):colors.red("Pendiente");
+      const estado= completadoEn?colors.green(`${completadoEn}`):colors.red("Pendiente");
       console.log(`${colors.green(index+1+'.')} ${descripcion} :: ${estado}`)
     }
   }
 
-  public listadoCompleto(){
+  public listadoCompleto():void{
     {
       console.log();
       this.decorarListado(this.getListadoTareas)
     }
   }
 
-  public listarPendientesCompletadas(completadas:boolean)
+  public listarPendientesCompletadas(completadas:boolean):void
   { 
     console.log();
     const tareasSegunEstado=this.getListadoTareas.filter(tarea=>!!tarea.completadoEn===completadas)
     this.decorarListado(tareasSegunEstado);
   }
 
-  public borrarTarea(id:string){
+  public borrarTarea(id:string):void{
     const listaFiltrada=this.getListadoTareas.filter(tareas=>tareas.id!==id);
     this._listado=[...listaFiltrada];
   }
 
-  public toggleCompletadas(ids:string[]){
+  public toggleCompletadas(ids:string[]):void{
     for (const id of ids) {
         const tarea =this._listado.find(todo=>todo.id==id);
         if(tarea &&!tarea?.completadoEn){
